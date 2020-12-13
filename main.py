@@ -122,12 +122,17 @@ def game():
 
                     
                     if button_hold.isOver(event.pos):
-                        pass # hold back
+                        # hold back
+                        human_total += human_turn_score  # save part of score gained
+                        human_turn_score = 0      # make this turn zero
                         turn = TURN_BOT  # give turn to bot if end of move
 
         # After every check of human action, it's time for bot actions
         if turn == TURN_BOT:
-            pass # bot does things
+            # bot does things
+            print('bot did a move')   # placeholder for move
+            turn = TURN_HUMAN   # give turn to human
+
 
         clock.tick(FPS)
         pygame.display.flip()
