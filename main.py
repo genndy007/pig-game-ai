@@ -134,10 +134,43 @@ def game():
             turn = TURN_HUMAN   # give turn to human
 
 
+
+        # Game end if someone won
+        if human_total >= POINTS_TO_WIN:
+            running = False
+            print_winner('HUMAN')
+        elif bot_total >= POINTS_TO_WIN:
+            running = False
+            print_winner('BOT')
+
+
+
+
+
         clock.tick(FPS)
         pygame.display.flip()
 
 
+
+
+def print_winner(winner):
+    printing = True
+    while printing:
+        screen.fill(WHITE)
+        # Show winner
+        text = f'Winner is {winner}'
+        winner_font = pygame.font.Font('resources/font/consola.ttf', 40)
+        rendered = winner_font.render(text, 1, BLACK)
+        screen.blit(rendered, (225, 300)) 
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                printing = False
+
+
+        clock.tick(FPS)
+        pygame.display.flip()
 
 
 
