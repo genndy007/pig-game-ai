@@ -1,2 +1,5 @@
 # compiled
 __pycache__/
+
+# I don't need a report at repository
+*.docx
