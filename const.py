@@ -1,0 +1,1 @@
+POINTS_TO_WIN = 100
