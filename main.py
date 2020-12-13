@@ -2,7 +2,7 @@ import pygame
 
 
 from button import Button
-from const import POINTS_TO_WIN
+from const import POINTS_TO_WIN, SCORE_STOP
 from const import TURN_HUMAN, TURN_BOT
 from const import FONT_SIZE
 from mechanics import roll_dice
@@ -111,7 +111,15 @@ def game():
                 if turn == TURN_HUMAN:   # if it's a human to roll then reasonable to check pressing buttons
                 
                     if button_roll.isOver(event.pos):
-                        pass # do a barrel roll
+                        # do a barrel roll
+                        score = roll_dice()  # throw a dice
+                        human_turn_score += score   # add to score
+                        current_dice = score       # change dice picture
+
+                        if score == SCORE_STOP:   # if it's 1 on dice
+                            human_turn_score = 0  # human gains nothing on this case
+                            turn = TURN_BOT       # give turn to bot
+
                     
                     if button_hold.isOver(event.pos):
                         pass # hold back
