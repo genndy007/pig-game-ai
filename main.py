@@ -5,6 +5,13 @@ from button import Button
 from const import POINTS_TO_WIN
 from const import TURN_HUMAN, TURN_BOT
 from const import FONT_SIZE
+from mechanics import roll_dice
+
+
+import random
+from datetime import datetime
+# Seed RNG
+random.seed(datetime.now())
 
 
 # Screen params
