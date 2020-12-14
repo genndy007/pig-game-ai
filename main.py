@@ -84,6 +84,9 @@ def game():
     turn = TURN_HUMAN
     current_dice = 1
 
+    # bot did not throw dice yet
+    bot_times_thrown = 0  
+
     # Buttons initialize
     button_roll = Button(300, 400, 200, 50, color=RED, text='Roll')
     button_hold = Button(300, 500, 200, 50, color=BLUE, text='Hold')
@@ -128,10 +131,60 @@ def game():
                         turn = TURN_BOT  # give turn to bot if end of move
 
         # After every check of human action, it's time for bot actions
-        if turn == TURN_BOT:
-            # bot does things
-            print('bot did a move')   # placeholder for move
-            turn = TURN_HUMAN   # give turn to human
+        if turn == TURN_BOT:  # bot does things
+            
+            # (bot - human) points 
+            difference = bot_total - human_total
+
+            # # bot took enough for win
+            # if bot_total + bot_turn_score >= POINTS_TO_WIN:
+            #     running = False
+
+            
+
+            # strategy 1: situation is calm
+            if difference >= -20:   # calm
+                if bot_turn_score < 20 and bot_times_thrown < 4: # optimal strategy
+                    score = roll_dice()   # throw dice
+                    bot_times_thrown += 1  # increment times thrown
+                    bot_turn_score += score  # add score
+                    current_dice = score     # change dice picture
+
+                    # Check if it's failure throw
+                    if score == SCORE_STOP:
+                        bot_turn_score = 0   # zero score for turn
+                        bot_times_thrown = 0   # zero times thrown
+                        turn = TURN_HUMAN   # give turn to human
+
+                # Take what gained per turn
+                else:
+                    bot_total += bot_turn_score   # add score
+                    bot_turn_score = 0   # zero per turn
+                    bot_times_thrown = 0  # zero times thrown
+                    turn = TURN_HUMAN   # give turn to human
+
+            # strategy 2: situation comes out of control, need to risk
+            else:
+                if bot_turn_score < human_total/2 and bot_times_thrown < 6:
+                    score = roll_dice()   # throw dice
+                    bot_times_thrown += 1  # increase times of throw
+                    bot_turn_score += score  # add score
+                    current_dice = score
+
+                    # If failure in risk
+                    if score == SCORE_STOP:
+                        bot_turn_score = 0 # zero for turn
+                        bot_times_thrown = 0
+                        turn = TURN_HUMAN
+                
+                # Take what gained
+                else:
+                    bot_total += bot_turn_score  # add score
+                    bot_turn_score = 0  # zero for turn
+                    bot_times_thrown = 0  # zero throws again
+                    turn = TURN_HUMAN   # give turn to human
+
+            
 
 
 
@@ -139,7 +192,7 @@ def game():
         if human_total >= POINTS_TO_WIN:
             running = False
             print_winner('HUMAN')
-        elif bot_total >= POINTS_TO_WIN:
+        elif bot_total + bot_turn_score >= POINTS_TO_WIN:
             running = False
             print_winner('BOT')
 
