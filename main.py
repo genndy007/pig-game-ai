@@ -4,7 +4,7 @@ import time
 from button import Button
 from const import POINTS_TO_WIN, SCORE_STOP
 from const import TURN_HUMAN, TURN_BOT
-from const import FONT_SIZE
+from const import FONT_SIZE, WIN_FONT_SIZE
 from mechanics import roll_dice
 
 
@@ -76,6 +76,7 @@ def load_dice_images(path):
 # main game loop
 def game():
     # Pre-loading of resource
+    winner_font = pygame.font.Font('resources/font/consola.ttf', 40)
     status_font = pygame.font.Font('resources/font/consola.ttf', FONT_SIZE)
     dice_imgs = load_dice_images('resources/img/')
 
@@ -104,6 +105,10 @@ def game():
         print_human_stats(human_total, human_turn_score, screen, status_font)
         print_bot_stats(bot_total, bot_turn_score, screen, status_font)
         
+        # Show current dice as a picture
+        
+        time.sleep(0.4)  # not so fast
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -121,6 +126,9 @@ def game():
 
                         if score == SCORE_STOP:   # if it's 1 on dice
                             human_turn_score = 0  # human gains nothing on this case
+                            screen.blit(dice_imgs[current_dice], (350, 100))
+                            pygame.display.flip()
+                            time.sleep(0.5)
                             turn = TURN_BOT       # give turn to bot
 
                     
@@ -136,14 +144,8 @@ def game():
             # (bot - human) points 
             difference = bot_total - human_total
 
-            # # bot took enough for win
-            # if bot_total + bot_turn_score >= POINTS_TO_WIN:
-            #     running = False
-
-            
-
             # strategy 1: situation is calm
-            if difference >= -20:   # calm
+            if difference >= -30:   # calm
                 if bot_turn_score < 20 and bot_times_thrown < 4: # optimal strategy
                     score = roll_dice()   # throw dice
                     bot_times_thrown += 1  # increment times thrown
@@ -184,19 +186,24 @@ def game():
                     bot_times_thrown = 0  # zero throws again
                     turn = TURN_HUMAN   # give turn to human
 
-            time.sleep(0.2)  # not so fast
-
-        # Show current dice as a picture
+            
         screen.blit(dice_imgs[current_dice], (350, 100))
+        
         
 
         # Game end if someone won
         if human_total >= POINTS_TO_WIN:
-            running = False
-            print_winner('HUMAN')
+            turn = 'no one'
+            text = 'Winner is HUMAN'
+            rendered = winner_font.render(text, 1, BLACK)
+            screen.blit(rendered, (225, 300))
         elif bot_total + bot_turn_score >= POINTS_TO_WIN:
-            running = False
-            print_winner('BOT')
+            bot_total += bot_turn_score
+            bot_turn_score = 0
+            turn = 'no one'
+            text = 'Winner is BOT'
+            rendered = winner_font.render(text, 1, BLACK)
+            screen.blit(rendered, (225, 300))
 
 
 
@@ -208,24 +215,15 @@ def game():
 
 
 
-def print_winner(winner):
-    printing = True
-    while printing:
-        screen.fill(WHITE)
-        # Show winner
-        text = f'Winner is {winner}'
-        winner_font = pygame.font.Font('resources/font/consola.ttf', 40)
-        rendered = winner_font.render(text, 1, BLACK)
-        screen.blit(rendered, (225, 300)) 
+# def print_winner(winner):
+#     printing = True
+#     while printing:
+#         # Show winner
+#         text = f'Winner is {winner}'
+#         winner_font = pygame.font.Font('resources/font/consola.ttf', 40)
+#         rendered = winner_font.render(text, 1, BLACK)
+#         screen.blit(rendered, (225, 300)) 
 
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                printing = False
-
-
-        clock.tick(FPS)
-        pygame.display.flip()
 
 
 
