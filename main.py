@@ -1,5 +1,5 @@
 import pygame
-
+import time
 
 from button import Button
 from const import POINTS_TO_WIN, SCORE_STOP
@@ -10,6 +10,7 @@ from mechanics import roll_dice
 
 import random
 from datetime import datetime
+
 # Seed RNG
 random.seed(datetime.now())
 
@@ -102,8 +103,7 @@ def game():
         # Show statuses of human and bot
         print_human_stats(human_total, human_turn_score, screen, status_font)
         print_bot_stats(bot_total, bot_turn_score, screen, status_font)
-        # Show current dice as a picture
-        screen.blit(dice_imgs[current_dice], (350, 100))
+        
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -184,9 +184,11 @@ def game():
                     bot_times_thrown = 0  # zero throws again
                     turn = TURN_HUMAN   # give turn to human
 
-            
+            time.sleep(0.2)  # not so fast
 
-
+        # Show current dice as a picture
+        screen.blit(dice_imgs[current_dice], (350, 100))
+        
 
         # Game end if someone won
         if human_total >= POINTS_TO_WIN:
